@@ -1,0 +1,12 @@
+
+> training-react@0.0.0 build
+> tsc -b && vite build
+
+src/pages/admin/AdminDashboard.tsx(89,9): error TS2322: Type 'Resolver<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: unknown; options?: string | undefined; }, any, { questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }>' is not assignable to type 'Resolver<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }, any, { questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }>'.
+  Types of parameters 'options' and 'options' are incompatible.
+    Type 'ResolverOptions<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }>' is not assignable to type 'ResolverOptions<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: unknown; options?: string | undefined; }>'.
+      Type 'unknown' is not assignable to type 'number'.
+src/pages/admin/AdminDashboard.tsx(662,59): error TS2345: Argument of type '(data: QuestionForm) => Promise<void>' is not assignable to parameter of type 'SubmitHandler<TFieldValues>'.
+  Types of parameters 'data' and 'data' are incompatible.
+    Type 'TFieldValues' is not assignable to type '{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }'.
+      Type 'FieldValues' is missing the following properties from type '{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }': questionText, questionType, isRequired, order

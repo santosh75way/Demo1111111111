@@ -1,0 +1,15 @@
+src/layouts/adminLayout.tsx(17,15): error TS6133: 'AnalyticsIcon' is declared but its value is never read.
+src/layouts/adminLayout.tsx(18,15): error TS6133: 'SettingsIcon' is declared but its value is never read.
+src/pages/admin/AdminDashboard.tsx(89,9): error TS2322: Type 'Resolver<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; options?: string | undefined; isRequired?: boolean | undefined; order?: unknown; }, any, { questionText: string; questionType: "TEXT" | ... 1 more ... | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }>' is not assignable to type 'Resolver<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }, any, { questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }>'.
+  Types of parameters 'options' and 'options' are incompatible.
+    Type 'ResolverOptions<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }>' is not assignable to type 'ResolverOptions<{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; options?: string | undefined; isRequired?: boolean | undefined; order?: unknown; }>'.
+      Type 'boolean | undefined' is not assignable to type 'boolean'.
+        Type 'undefined' is not assignable to type 'boolean'.
+src/pages/admin/AdminDashboard.tsx(662,59): error TS2345: Argument of type '(data: QuestionForm) => Promise<void>' is not assignable to parameter of type 'SubmitHandler<TFieldValues>'.
+  Types of parameters 'data' and 'data' are incompatible.
+    Type 'TFieldValues' is not assignable to type '{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }'.
+      Type 'FieldValues' is missing the following properties from type '{ questionText: string; questionType: "TEXT" | "NUMBER" | "SELECT"; isRequired: boolean; order: number; options?: string | undefined; }': questionText, questionType, isRequired, order
+src/pages/user/UserDashboard.tsx(3,60): error TS6133: 'CardActionArea' is declared but its value is never read.
+src/pages/user/UserDashboard.tsx(4,23): error TS6133: 'Alert' is declared but its value is never read.
+src/pages/user/UserDashboard.tsx(5,42): error TS6133: 'IconButton' is declared but its value is never read.
+src/pages/user/UserDashboard.tsx(5,54): error TS6133: 'Tooltip' is declared but its value is never read.

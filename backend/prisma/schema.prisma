@@ -1,0 +1,163 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  password  String
+  fullName  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  lastLogin DateTime?
+  role      Role      @default(USER)
+
+  // Relations
+  resetTokens PasswordResetToken[]
+  surveys     Survey[]
+  responses   Response[]
+
+  @@index([email])
+  @@map("users")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("passwords")
+}
+
+model Survey {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  status      SurveyStatus @default(DRAFT)
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  createdBy  User        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  questions  Question[]
+  conditions Condition[]
+  responses  Response[]
+
+  @@index([createdById])
+  @@index([status])
+  @@map("surveys")
+}
+
+model Question {
+  id           String       @id @default(cuid())
+  surveyId     String
+  questionText String
+  questionType QuestionType
+  isRequired   Boolean      @default(true)
+  order        Int
+  options      Json?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  survey     Survey      @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  conditions Condition[]
+  answers    Answer[]
+
+  @@index([surveyId])
+  @@map("questions")
+}
+
+model Condition {
+  id         String            @id @default(cuid())
+  surveyId   String
+  questionId String
+  operator   ConditionOperator
+  value      String
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  survey   Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([surveyId])
+  @@index([questionId])
+  @@map("conditions")
+}
+
+model Response {
+  id                String            @id @default(cuid())
+  surveyId          String
+  userId            String
+  eligibilityStatus EligibilityStatus
+  submittedAt       DateTime          @default(now())
+
+  survey  Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  answers Answer[]
+
+  @@unique([surveyId, userId])
+  @@index([surveyId])
+  @@index([userId])
+  @@map("responses")
+}
+
+model Answer {
+  id         String @id @default(cuid())
+  responseId String
+  questionId String
+  value      String
+
+  response Response @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([responseId])
+  @@index([questionId])
+  @@map("answers")
+}
+
+enum SurveyStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+}
+
+enum QuestionType {
+  TEXT
+  NUMBER
+  SELECT
+}
+
+enum ConditionOperator {
+  EQUALS
+  NOT_EQUALS
+  GREATER_THAN
+  GREATER_THAN_EQUAL
+  LESS_THAN
+  LESS_THAN_EQUAL
+  CONTAINS
+}
+
+enum EligibilityStatus {
+  ELIGIBLE
+  NOT_ELIGIBLE
+}
