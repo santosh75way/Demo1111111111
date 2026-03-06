@@ -2,6 +2,8 @@ import type { Request, Response, NextFunction } from 'express';
 import { surveyUserService } from './survey-user.service';
 import { surveyIdParamSchema, submitSurveyBodySchema } from './survey-user.schema';
 import { successResponse } from '@/common/types/response.type';
+import { getIO } from '@/common/socket/socket';
+import { analyticsRepository } from '@/analytics/analytics.repository';
 
 // req.user is globally typed by the authenticate middleware as DecodedToken
 // DecodedToken: { userId: string; email: string; role: string; iat: number; exp: number }
@@ -50,6 +52,19 @@ export const surveyUserController = {
       const userId = req.user!.userId;
 
       const result = await surveyUserService.submitSurvey(surveyId, userId, body);
+
+      // Emit real-time stats to viewing admins
+      try {
+        const upToDateStats = await analyticsRepository.getStats(surveyId);
+        const io = getIO();
+        io.to(`survey-stats:${surveyId}`).emit('survey:stats-updated', {
+          surveyId,
+          ...upToDateStats
+        });
+      } catch (err) {
+        console.error('Failed to emit socket update stats:', err);
+      }
+
       res.status(201).json(successResponse('Survey submitted successfully', result));
     } catch (error) {
       next(error);

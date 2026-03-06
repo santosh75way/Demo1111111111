@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { responseService } from './response.service';
+import { submitResponse as submitSurveyService } from './response.service';
 import { successResponse, errorResponse } from '@/common/types/response.type';
 import { SubmitSurveyDTO } from './response.types';
 
@@ -13,7 +13,8 @@ export const submitSurvey = async (req: Request, res: Response): Promise<void> =
         const { surveyId } = req.params;
         const data = req.body as SubmitSurveyDTO;
 
-        const response = await responseService.submitResponse(surveyId, req.user.userId, data);
+        const response = await submitSurveyService(surveyId, req.user.userId, data);
+
         res.status(201).json(successResponse('Survey submitted successfully', response));
     } catch (error) {
         if (error instanceof Error) {
