@@ -5,6 +5,7 @@ import AdminLayout from "@/layouts/adminLayout";
 import AdminPage from "@/pages/admin";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import { adminLoader } from "@/services/adminLoader";
+import SurveyReport from "@/pages/admin/SurveyReport";
 import UserDashboard from "@/pages/user/UserDashboard";
 import ProfilePage from "@/pages/profile";
 import ErrorBoundaryPage from "@/pages/error-boundary";
@@ -38,6 +39,10 @@ const protectedRoutes: RouteObject[] = [
       {
         path: "/admin/dashboard",
         element: <AdminDashboard />,
+      },
+      {
+        path: "/admin/reports/surveys-summary",
+        element: <SurveyReport />,
       },
     ],
   },

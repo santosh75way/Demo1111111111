@@ -5,6 +5,7 @@ import { questionRoutes, surveyQuestionRoutes } from '@/question/question.routes
 import { conditionRoutes, surveyConditionRoutes } from '@/condition/condition.routes';
 import { responseRoutes } from '@/response/response.routes';
 import { surveyAnalyticsRoutes } from '@/analytics/analytics.routes';
+import { reportsRoutes } from '@/analytics/reports.routes';
 import surveyUserRoutes from '@/survey-user/survey-user.routes';
 import { Router } from "express";
 
@@ -14,6 +15,7 @@ router.use('/auth', authRoutes);
 router.use('/admin/surveys/:surveyId/questions', surveyQuestionRoutes);
 router.use('/admin/surveys/:surveyId/conditions', surveyConditionRoutes);
 router.use('/admin/surveys/:surveyId', surveyAnalyticsRoutes);
+router.use('/admin/reports', reportsRoutes);
 router.use('/admin/surveys', surveyRoutes);
 router.use('/admin/questions', questionRoutes);
 router.use('/admin/conditions', conditionRoutes);

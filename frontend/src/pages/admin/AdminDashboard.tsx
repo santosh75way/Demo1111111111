@@ -24,6 +24,7 @@ import {
     Edit as EditIcon,
     ExpandMore as ExpandMoreIcon,
     ExpandLess as ExpandLessIcon,
+    Assessment as AssessmentIcon,
 } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -683,6 +684,18 @@ export default function AdminDashboard() {
                                 )}
                             </CardContent>
                         </Card>
+
+                        {/* Generate Report Button */}
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            startIcon={<AssessmentIcon />}
+                            onClick={() => window.open('/admin/reports/surveys-summary', '_blank')}
+                            sx={{ mt: 1, borderRadius: 2, py: 1.5, fontWeight: 700, borderStyle: 'dashed', borderWidth: 2 }}
+                            fullWidth
+                        >
+                            Generate Survey Report
+                        </Button>
                     </Stack>
                 </Box>
             </Box>

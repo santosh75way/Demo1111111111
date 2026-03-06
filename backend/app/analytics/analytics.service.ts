@@ -21,7 +21,12 @@ export const getSurveyResponses = async (surveyId: string, userId: string) => {
     return analyticsRepository.getResponsesBySurvey(surveyId);
 };
 
+export const getSurveysSummary = async () => {
+    return analyticsRepository.getSurveysSummary();
+};
+
 export const analyticsService = {
     getSurveyStats,
     getSurveyResponses,
+    getSurveysSummary,
 };

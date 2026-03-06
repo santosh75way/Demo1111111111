@@ -38,6 +38,22 @@ export interface SurveyStats {
     notEligibleCount: number;
 }
 
+export interface SurveySummaryItem {
+    surveyNumber: number;
+    surveyId: string;
+    surveyName: string;
+    totalResponses: number;
+    eligible: number;
+    notEligible: number;
+    eligibilityRate: number;
+}
+
+export interface SurveySummaryReport {
+    generatedAt: string;
+    totalSurveys: number;
+    surveys: SurveySummaryItem[];
+}
+
 // ─── Admin — Surveys ────────────────────────────────────────────────────────
 // GET  /api/admin/surveys
 export const getAdminSurveys = async (): Promise<Survey[]> => {
@@ -133,6 +149,12 @@ export const deleteCondition = async (conditionId: string): Promise<void> => {
 // GET  /api/admin/surveys/:surveyId/stats
 export const getSurveyStats = async (surveyId: string): Promise<SurveyStats> => {
     const res = await api.get<ApiResponse<SurveyStats>>(`/api/admin/surveys/${surveyId}/stats`);
+    return res.data.data;
+};
+
+// GET  /api/admin/reports/surveys-summary
+export const getSurveySummaryReport = async (): Promise<SurveySummaryReport> => {
+    const res = await api.get<ApiResponse<SurveySummaryReport>>('/api/admin/reports/surveys-summary');
     return res.data.data;
 };
 

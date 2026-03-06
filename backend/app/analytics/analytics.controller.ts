@@ -48,7 +48,34 @@ export const getSurveyResponses = async (req: Request, res: Response): Promise<v
     }
 };
 
+export const getSurveysSummary = async (req: Request, res: Response): Promise<void> => {
+    try {
+        if (!req.user) {
+            res.status(401).json(errorResponse('Unauthorized'));
+            return;
+        }
+
+        const data = await analyticsService.getSurveysSummary();
+        res.status(200).json({
+            success: true,
+            message: "Survey report fetched successfully",
+            data: {
+                generatedAt: new Date().toISOString(),
+                totalSurveys: data.totalSurveys,
+                surveys: data.surveys
+            }
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json(errorResponse(error.message));
+        } else {
+            res.status(400).json(errorResponse('An unexpected error occurred'));
+        }
+    }
+};
+
 export const analyticsController = {
     getSurveyStats,
     getSurveyResponses,
+    getSurveysSummary,
 };

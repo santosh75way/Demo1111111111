@@ -57,4 +57,44 @@ export const analyticsRepository = {
             },
         });
     },
+
+    getSurveysSummary: async () => {
+        const surveys = await prisma.survey.findMany({
+            select: {
+                id: true,
+                title: true,
+                responses: {
+                    select: {
+                        eligibilityStatus: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        let surveyNumber = 1;
+        const surveyStats = surveys.map(survey => {
+            const totalResponses = survey.responses.length;
+            const eligible = survey.responses.filter(r => r.eligibilityStatus === EligibilityStatus.ELIGIBLE).length;
+            const notEligible = survey.responses.filter(r => r.eligibilityStatus === EligibilityStatus.NOT_ELIGIBLE).length;
+            const eligibilityRate = totalResponses > 0 ? (eligible / totalResponses) * 100 : 0;
+
+            return {
+                surveyNumber: surveyNumber++,
+                surveyId: survey.id,
+                surveyName: survey.title,
+                totalResponses,
+                eligible,
+                notEligible,
+                eligibilityRate
+            };
+        });
+
+        return {
+            totalSurveys: surveys.length,
+            surveys: surveyStats
+        };
+    }
 };
