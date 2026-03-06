@@ -22,7 +22,7 @@ const publicRoutes: RouteObject[] = [
       { path: "*", element: <NotFoundPage /> },
     ],
   },
-  
+
   { path: "/login", element: <LoginPage />, loader: guestLoader },
   { path: "/signup", element: <SignupPage />, loader: guestLoader },
   { path: "/forgot-password", element: <ForgotPasswordPage /> },

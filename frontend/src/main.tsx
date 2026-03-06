@@ -23,7 +23,7 @@ createRoot(document.getElementById("root")!).render(
           draggable
           theme="colored"
         />
-          <RouterProvider router={router} />
+        <RouterProvider router={router} />
       </Provider>
     </ThemeProvider>
   </StrictMode>,

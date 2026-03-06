@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { io, Socket } from 'socket.io-client';
 import {
     Container, Typography, Box, Button, Card, CardContent,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField,
@@ -71,6 +72,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [showQuestions, setShowQuestions] = useState(true);
     const [showConditions, setShowConditions] = useState(true);
+    const [socketStatus, setSocketStatus] = useState<'Live' | 'Reconnecting...' | 'Disconnected'>('Disconnected');
 
     // Modals
     const [openSurveyModal, setOpenSurveyModal] = useState(false);
@@ -134,6 +136,53 @@ export default function AdminDashboard() {
         if (selectedSurvey) fetchSurveyData(selectedSurvey.id);
         else { setQuestions([]); setConditions([]); setStats(null); }
     }, [selectedSurvey, fetchSurveyData]);
+
+    // ── Socket Logic ──
+    useEffect(() => {
+        if (!selectedSurvey) {
+            setSocketStatus('Disconnected');
+            return;
+        }
+
+        const token = localStorage.getItem('accessToken');
+        if (!token) return;
+
+        const URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+        const socket: Socket = io(URL, {
+            auth: { token }
+        });
+
+        socket.on('connect', () => {
+            setSocketStatus('Live');
+            socket.emit('join-survey-stats', { surveyId: selectedSurvey.id });
+        });
+
+        socket.on('disconnect', () => {
+            setSocketStatus('Disconnected');
+        });
+
+        socket.on('connect_error', () => {
+            setSocketStatus('Reconnecting...');
+        });
+
+        socket.on('survey:stats-updated', (payload: any) => {
+            if (payload.surveyId === selectedSurvey.id) {
+                setStats({
+                    totalResponses: payload.totalResponses,
+                    eligibleCount: payload.eligibleCount,
+                    notEligibleCount: payload.notEligibleCount
+                });
+            }
+        });
+
+        return () => {
+            socket.off('connect');
+            socket.off('disconnect');
+            socket.off('connect_error');
+            socket.off('survey:stats-updated');
+            socket.disconnect();
+        };
+    }, [selectedSurvey]);
 
     // ── Survey handlers ──
 
@@ -607,6 +656,12 @@ export default function AdminDashboard() {
                                 <Box display="flex" alignItems="center" gap={1} mb={1.5}>
                                     <BarChartIcon sx={{ color: 'primary.main', fontSize: 18 }} />
                                     <Typography variant="subtitle2" fontWeight={700}>Live Stats Preview</Typography>
+                                    <Chip
+                                        label={socketStatus}
+                                        size="small"
+                                        color={socketStatus === 'Live' ? 'success' : socketStatus === 'Reconnecting...' ? 'warning' : 'default'}
+                                        sx={{ ml: 'auto', fontSize: '0.65rem', height: 20 }}
+                                    />
                                 </Box>
                                 {stats ? (
                                     <Stack spacing={1}>
